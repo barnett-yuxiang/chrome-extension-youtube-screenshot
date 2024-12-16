@@ -3,22 +3,19 @@
   "name": "YouTube Video Screenshot Tool",
   "version": "2.5.2",
   "description": "Adds a Screenshot button to YouTube videos, allowing you to capture and save video frames as high-quality images.",
-
-  "permissions": ["webNavigation", "storage", "downloads"],
+  "permissions": ["storage", "downloads"],
   "host_permissions": ["https://www.youtube.com/*"],
-
   "content_scripts": [
     {
       "matches": ["https://www.youtube.com/*"],
       "css": ["style.css"],
-      "js": ["page.js"],
+      "js": ["content.js"],
       "run_at": "document_end"
     }
   ],
   "background": {
     "service_worker": "background.js"
   },
-  "options_page": "options.html",
   "icons": {
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
