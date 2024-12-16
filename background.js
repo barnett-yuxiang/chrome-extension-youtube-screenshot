@@ -1,9 +1,13 @@
 chrome.webNavigation.onHistoryStateUpdated.addListener(
   function (data) {
     chrome.tabs.get(data.tabId, function (tab) {
-      chrome.tabs.executeScript(data.tabId, {
-        code: 'if (typeof AddScreenshotButton !== "undefined") { AddScreenshotButton(); }',
-        runAt: "document_start",
+      chrome.scripting.executeScript({
+        target: { tabId: data.tabId },
+        func: () => {
+          if (typeof AddScreenshotButton !== "undefined") {
+            AddScreenshotButton();
+          }
+        },
       });
     });
   },

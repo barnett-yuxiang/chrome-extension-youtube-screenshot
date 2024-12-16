@@ -92,6 +92,8 @@ function CaptureScreenshot() {
 }
 
 function AddScreenshotButton() {
+  if (document.querySelector(".screenshotButton")) return; // 防止重复添加按钮
+
   var ytpRightControls =
     document.getElementsByClassName("ytp-right-controls")[0];
   if (ytpRightControls) {
@@ -196,25 +198,13 @@ chrome.storage.sync.get(
     "screenshotFileFormat",
   ],
   function (result) {
-    screenshotKey = result.screenshotKey;
-    playbackSpeedButtons = result.playbackSpeedButtons;
-    if (result.screenshotFileFormat === undefined) {
-      screenshotFormat = "png";
-    } else {
-      screenshotFormat = result.screenshotFileFormat;
-    }
+    screenshotKey = result.screenshotKey ?? false;
+    playbackSpeedButtons = result.playbackSpeedButtons ?? false;
+    screenshotFormat = result.screenshotFileFormat ?? "png";
+    screenshotFunctionality = result.screenshotFunctionality ?? 0;
+    extension = screenshotFormat === "jpeg" ? "jpg" : screenshotFormat;
 
-    if (result.screenshotFunctionality === undefined) {
-      screenshotFunctionality = 0;
-    } else {
-      screenshotFunctionality = result.screenshotFunctionality;
-    }
-
-    if (screenshotFormat === "jpeg") {
-      extension = "jpg";
-    } else {
-      extension = screenshotFormat;
-    }
+    AddScreenshotButton(); // 在设置加载完后调用
   }
 );
 
