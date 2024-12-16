@@ -1,0 +1,15 @@
+.screenshotButton {
+  width: auto;
+  float: left;
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 0.5em;
+  font-weight: bold; /* 字体加粗 */
+  margin-right: 8px; /* 增加与右侧按钮的间距 */
+}
+
+.screenshotButton:hover {
+  background: rgba(255, 255, 255, 0.1); /* 悬停时的背景变化 */
+}
