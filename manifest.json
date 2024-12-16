@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "YouTube Screenshot",
   "description": "Add a button to YouTube videos to capture and save screenshots.",
-  "version": "1.0",
+  "version": "1.0.7",
   "permissions": ["activeTab", "scripting", "downloads"],
   "content_scripts": [
     {
