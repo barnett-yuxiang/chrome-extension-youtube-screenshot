@@ -5,28 +5,32 @@
   const container = document.querySelector(".ytp-right-controls");
   if (!container) return;
 
-  // 创建按钮
+  // Create button
   const button = document.createElement("button");
   button.id = "screenshot-button";
-  button.innerText = "Screenshot"; // 显示英文文本
+  button.innerText = "Screenshot"; // Display English text
   button.style.cssText = `
     background-color: #ffcc00;
     border: none;
     border-radius: 4px;
     color: black;
-    font-size: 14px;
-    margin-left: 10px;
-    padding: 5px;
+    font-size: 12px;
+    margin-left: 5px;
+    padding: 5px 8px;
     cursor: pointer;
     outline: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 36px; /* Match YouTube control button height */
   `;
-  button.title = "截图当前视频屏幕";
+  button.title = "Capture current video frame";
 
-  // 按钮点击事件
+  // Button click event
   button.addEventListener("click", () => {
     chrome.runtime.sendMessage({ action: "screenshot" });
   });
 
-  // 插入到 YouTube 控件中
+  // Insert into YouTube controls
   container.insertBefore(button, container.firstChild);
 })();
