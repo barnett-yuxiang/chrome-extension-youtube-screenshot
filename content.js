@@ -8,18 +8,18 @@
   // 创建按钮
   const button = document.createElement("button");
   button.id = "screenshot-button";
-  button.innerHTML = "🖼"; // 使用图标
+  button.innerText = "Screenshot"; // 显示英文文本
   button.style.cssText = `
-      background-color: #ffcc00;
-      border: none;
-      border-radius: 4px;
-      color: black;
-      font-size: 14px;
-      margin-left: 10px;
-      padding: 5px;
-      cursor: pointer;
-      outline: none;
-    `;
+    background-color: #ffcc00;
+    border: none;
+    border-radius: 4px;
+    color: black;
+    font-size: 14px;
+    margin-left: 10px;
+    padding: 5px;
+    cursor: pointer;
+    outline: none;
+  `;
   button.title = "截图当前视频屏幕";
 
   // 按钮点击事件
