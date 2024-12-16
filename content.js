@@ -1,119 +1,65 @@
 "use strict";
 
-var screenshotFunctionality = 0;
-var screenshotFormat = "png";
-var extension = "png";
-
 function CaptureScreenshot() {
-  var appendixTitle = "screenshot." + extension;
+  const extension = "png"; // 文件格式固定为 png
+  const appendixTitle = "screenshot." + extension;
 
-  var title;
+  let title;
 
-  var headerEls = document.querySelectorAll(
+  // 获取视频标题
+  const headerEls = document.querySelectorAll(
     "h1.title.ytd-video-primary-info-renderer"
   );
 
-  function SetTitle() {
-    if (headerEls.length > 0) {
-      title = headerEls[0].innerText.trim();
-      return true;
-    } else {
-      return false;
-    }
+  if (headerEls.length > 0) {
+    title = headerEls[0].innerText.trim();
+  } else {
+    title = "YouTube_Screenshot"; // 如果未找到标题，设置默认值
   }
 
-  if (SetTitle() == false) {
-    headerEls = document.querySelectorAll("h1.watch-title-container");
+  // 获取当前视频时间，生成文件名
+  const player = document.querySelector(".video-stream");
+  const time = Math.floor(player?.currentTime || 0);
 
-    if (SetTitle() == false) title = "";
-  }
+  const minutes = Math.floor(time / 60);
+  const seconds = time % 60;
+  title += ` ${minutes}-${seconds} ${appendixTitle}`;
 
-  var player = document.getElementsByClassName("video-stream")[0];
-
-  var time = player.currentTime;
-
-  title += " ";
-
-  let minutes = Math.floor(time / 60);
-
-  time = Math.floor(time - minutes * 60);
-
-  if (minutes > 60) {
-    let hours = Math.floor(minutes / 60);
-    minutes -= hours * 60;
-    title += hours + "-";
-  }
-
-  title += minutes + "-" + time;
-
-  title += " " + appendixTitle;
-
-  var canvas = document.createElement("canvas");
+  // 创建 Canvas 并绘制当前视频帧
+  const canvas = document.createElement("canvas");
   canvas.width = player.videoWidth;
   canvas.height = player.videoHeight;
   canvas.getContext("2d").drawImage(player, 0, 0, canvas.width, canvas.height);
 
-  var downloadLink = document.createElement("a");
-  downloadLink.download = title;
-
-  function DownloadBlob(blob) {
-    downloadLink.href = URL.createObjectURL(blob);
-    downloadLink.click();
-  }
-
-  async function ClipboardBlob(blob) {
-    const clipboardItemInput = new ClipboardItem({ "image/png": blob });
-    await navigator.clipboard.write([clipboardItemInput]);
-  }
-
-  // If clipboard copy is needed generate png (clipboard only supports png)
-  if (screenshotFunctionality == 1 || screenshotFunctionality == 2) {
-    canvas.toBlob(async function (blob) {
-      await ClipboardBlob(blob);
-      // Also download it if it's needed and it's in the correct format
-      if (screenshotFunctionality == 2 && screenshotFormat === "png") {
-        DownloadBlob(blob);
-      }
-    }, "image/png");
-  }
-
-  // Create and download image in the selected format if needed
-  if (
-    screenshotFunctionality == 0 ||
-    (screenshotFunctionality == 2 && screenshotFormat !== "png")
-  ) {
-    canvas.toBlob(async function (blob) {
-      DownloadBlob(blob);
-    }, "image/" + screenshotFormat);
-  }
+  // 下载截图
+  canvas.toBlob((blob) => {
+    const downloadLink = document.createElement("a");
+    downloadLink.download = title; // 文件名
+    downloadLink.href = URL.createObjectURL(blob); // Blob URL
+    downloadLink.click(); // 触发下载
+  }, "image/png");
 }
 
 function AddScreenshotButton() {
   if (document.querySelector(".screenshotButton")) return; // 防止重复添加按钮
 
-  var ytpRightControls =
-    document.getElementsByClassName("ytp-right-controls")[0];
+  const ytpRightControls = document.querySelector(".ytp-right-controls");
   if (ytpRightControls) {
+    // 创建截图按钮
+    const screenshotButton = document.createElement("button");
+    screenshotButton.className = "screenshotButton ytp-button";
+    screenshotButton.style.width = "auto";
+    screenshotButton.innerHTML = "Screenshot";
+    screenshotButton.style.cssFloat = "left";
+    screenshotButton.onclick = CaptureScreenshot;
+
     ytpRightControls.prepend(screenshotButton);
   }
 }
 
-var screenshotButton = document.createElement("button");
-screenshotButton.className = "screenshotButton ytp-button";
-screenshotButton.style.width = "auto";
-screenshotButton.innerHTML = "Screenshot";
-screenshotButton.style.cssFloat = "left";
-screenshotButton.onclick = CaptureScreenshot;
+// 使用 MutationObserver 监听页面变化，确保按钮在不同页面加载
+const observer = new MutationObserver(() => {
+  AddScreenshotButton();
+});
 
-chrome.storage.sync.get(
-  ["screenshotFunctionality", "screenshotFileFormat"],
-  function (result) {
-    screenshotFormat = result.screenshotFileFormat ?? "png";
-    screenshotFunctionality = result.screenshotFunctionality ?? 0;
-    extension = screenshotFormat === "jpeg" ? "jpg" : screenshotFormat;
-
-    AddScreenshotButton(); // 在设置加载完后调用
-  }
-);
-
-AddScreenshotButton();
+observer.observe(document.body, { childList: true, subtree: true });

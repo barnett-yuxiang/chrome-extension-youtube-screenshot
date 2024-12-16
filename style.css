@@ -1,13 +1,13 @@
-.SYText {
-  width: 4em !important;
+.screenshotButton {
+  width: auto;
   float: left;
-  text-align: center !important;
-  border-radius: 0.5em;
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 0.5em;
 }
-.SYText:hover {
-  background: #eee;
-  color: black;
-}
-.SYText.SYTactive {
-  text-decoration: underline;
+
+.screenshotButton:hover {
+  background: rgba(255, 255, 255, 0.1);
 }
