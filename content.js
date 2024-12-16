@@ -28,7 +28,28 @@
 
   // Button click event
   button.addEventListener("click", () => {
-    chrome.runtime.sendMessage({ action: "screenshot" });
+    const video = document.querySelector("video");
+    if (!video) return;
+
+    // Create canvas to draw current video frame
+    const canvas = document.createElement("canvas");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    // Convert canvas to image URL
+    canvas.toBlob((blob) => {
+      const url = URL.createObjectURL(blob);
+      const filename = `youtube-screenshot-${Date.now()}.png`;
+
+      // Download the image
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
+    }, "image/png");
   });
 
   // Insert into YouTube controls
